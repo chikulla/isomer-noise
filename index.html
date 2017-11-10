@@ -21,10 +21,10 @@
     return Array(len).fill(0).map((v, i) => i - (len / 4)).reverse();
   }
   function randomColor() {
-    return new Isomer.Color(random256(), random256(), random256());
+    return new Isomer.Color(random(100) + 20, random(150) + 50, random(50) + 100);
   }
-  function random256() {
-    return Math.floor(Math.random() * 256);
+  function random(num) {
+    return Math.floor(Math.random() * num);
   }
   function randomHeight() {
     return Math.floor(Math.random() * 10) / 10;
