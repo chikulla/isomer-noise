@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>untitled</title>
+  <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css">
+  <script src="node_modules/isomer/dist/isomer.min.js"></script>
+  <style>
+
+  </style>
+</head>
+<body>
+<div class="container-fluid">
+  <div class="row">
+    <canvas height="2000" width="2000" class="col-xs-12" id="art"></canvas>
+  </div>
+</div>
+<script>
+  function indexies() {
+    const len = 46;
+    return Array(len).fill(0).map((v, i) => i - (len / 4)).reverse();
+  }
+  function randomColor() {
+    return new Isomer.Color(random256(), random256(), random256());
+  }
+  function random256() {
+    return Math.floor(Math.random() * 256);
+  }
+  function randomHeight() {
+    return Math.floor(Math.random() * 10) / 10;
+  }
+  const iso = new Isomer(document.getElementById('art'));
+  const xlist = indexies();
+  const ylist = indexies();
+  const grids = xlist.map((x) => ylist.map((y) => ({x,y}))).reduce((a,b)=>a.concat(b));
+
+  grids.forEach((g) => {
+    iso.add(Isomer.Shape.Prism(Isomer.Point(g.x,g.y,0), 1, 1, randomHeight()), randomColor());
+  });
+</script>
+</body>
+</html>
