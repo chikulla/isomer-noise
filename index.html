@@ -29,14 +29,19 @@
   function randomHeight() {
     return Math.floor(Math.random() * 10) / 10;
   }
-  const iso = new Isomer(document.getElementById('art'));
-  const xlist = indexies();
-  const ylist = indexies();
-  const grids = xlist.map((x) => ylist.map((y) => ({x,y}))).reduce((a,b)=>a.concat(b));
 
-  grids.forEach((g) => {
-    iso.add(Isomer.Shape.Prism(Isomer.Point(g.x,g.y,0), 1, 1, randomHeight()), randomColor());
-  });
+  function main() {
+    const iso = new Isomer(document.getElementById('art'));
+    const xlist = indexies();
+    const ylist = indexies();
+    const grids = xlist.map((x) => ylist.map((y) => ({x,y}))).reduce((a,b)=>a.concat(b));
+
+    grids.forEach((g) => {
+      iso.add(Isomer.Shape.Prism(Isomer.Point(g.x,g.y,0), 1, 1, randomHeight()), randomColor());
+    });
+  }
+
+  main();
 </script>
 </body>
 </html>
