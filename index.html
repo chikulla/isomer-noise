@@ -14,7 +14,7 @@
 </div>
 <script>
   function indexies() {
-    const len = 10;
+    const len = 15;
     return Array(len).fill(0).map((v, i) => i - (len / 4)).reverse();
   }
 
@@ -45,7 +45,7 @@
     }
 
     randomHeight() {
-      return Math.floor(Math.random() * 10) / 10;
+      return Math.random() + 0.3;
     }
 
 
@@ -57,7 +57,7 @@
     }
 
     randomInterval() {
-      return Math.floor(Math.random() * 50) + 1;
+      return Math.floor(Math.random() * 20) + 10;
     }
 
     update() {
@@ -99,7 +99,7 @@
 
   }
 
-  function addDot(iso, d) {
+  function renderDot(iso, d) {
     iso.add(
       Isomer.Shape.Prism(
         Isomer.Point(d.x, d.y, 0),
@@ -127,7 +127,7 @@
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
       dots.map((d) => d.current()).forEach((d) => {
-        addDot(iso, d);
+        renderDot(iso, d);
       });
     }
     requestAnimationFrame(loop);
