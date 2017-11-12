@@ -3,18 +3,22 @@
 <head>
   <meta charset="UTF-8">
   <title>untitled</title>
-  <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css">
   <script src="node_modules/isomer/dist/isomer.min.js"></script>
+  <style>
+    body {
+      margin: 0;
+    }
+    canvas {
+      width: 100%;
+    }
+  </style>
 </head>
 <body>
-<div class="container-fluid">
-  <div class="row">
-    <canvas height="2000" width="2000" class="col-xs-12" id="art"></canvas>
-  </div>
+    <canvas height="1000" width="1000" id="art"></canvas>
 </div>
 <script>
   function indexies() {
-    const len = 15;
+    const len = 23;
     return Array(len).fill(0).map((v, i) => i - (len / 4)).reverse();
   }
 
@@ -57,7 +61,7 @@
     }
 
     randomInterval() {
-      return Math.floor(Math.random() * 20) + 10;
+      return Math.floor(Math.random() * 20) + 30;
     }
 
     update() {

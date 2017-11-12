@@ -9,7 +9,6 @@
   "keywords": [],
   "author": "Chikura Hara",
   "dependencies": {
-    "bootstrap": "^3.3.7",
     "isomer": "^0.2.6"
   }
 }
