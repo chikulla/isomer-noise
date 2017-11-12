@@ -5,9 +5,6 @@
   <title>untitled</title>
   <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css">
   <script src="node_modules/isomer/dist/isomer.min.js"></script>
-  <style>
-
-  </style>
 </head>
 <body>
 <div class="container-fluid">
@@ -20,24 +17,91 @@
     const len = 46;
     return Array(len).fill(0).map((v, i) => i - (len / 4)).reverse();
   }
+
   function randomColor() {
     return new Isomer.Color(random(100) + 20, random(150) + 50, random(50) + 100);
   }
+
   function random(num) {
     return Math.floor(Math.random() * num);
   }
+
   function randomHeight() {
     return Math.floor(Math.random() * 10) / 10;
+  }
+
+  class RandomDot {
+    constructor(x, y) {
+      this.x = x;
+      this.y = y;
+      this.before = this.randomColorHeight();
+      this.after = this.randomColorHeight();
+      this.interval = this.randomInterval();
+      this.progress = this.interval;
+    }
+
+    randomColorHeight() {
+      return {
+        color: randomColor(),
+        height: randomHeight()
+      };
+    }
+
+    randomInterval() {
+      return Math.floor(Math.random() * 10);
+    }
+
+    update() {
+      if (this.progress <= 0) {
+        this.before = this.after;
+        this.after = this.randomColorHeight();
+      }
+      this.progress--;
+    }
+
+    currentColor() {
+      return new Isomer.Color(
+        this.currentValue(this.before.color.r, this.after.color.r),
+        this.currentValue(this.before.color.g, this.after.color.g),
+        this.currentValue(this.before.color.b, this.after.color.b),
+        this.currentValue(this.before.color.a, this.after.color.a),
+      );
+    }
+
+    currentValue(before, after) {
+      return before;
+    }
+
+    current() {
+      this.update();
+      return {
+        x: this.x,
+        y: this.y,
+        color: this.currentColor(),
+        height: this.before.height
+      };
+    }
+
   }
 
   function main() {
     const iso = new Isomer(document.getElementById('art'));
     const xlist = indexies();
     const ylist = indexies();
-    const grids = xlist.map((x) => ylist.map((y) => ({x,y}))).reduce((a,b)=>a.concat(b));
+    const grids = xlist.map((x) => ylist.map((y) => ({x, y}))).reduce((a, b) => a.concat(b));
 
-    grids.forEach((g) => {
-      iso.add(Isomer.Shape.Prism(Isomer.Point(g.x,g.y,0), 1, 1, randomHeight()), randomColor());
+    const dots = grids.map((g) => new RandomDot(g.x, g.y));
+
+    dots.map((d) => d.current()).forEach((d) => {
+      iso.add(
+        Isomer.Shape.Prism(
+          Isomer.Point(d.x, d.y, 0),
+          1,
+          1,
+          d.height
+        ),
+        d.color
+      );
     });
   }
 
