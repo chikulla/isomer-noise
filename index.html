@@ -18,18 +18,6 @@
     return Array(len).fill(0).map((v, i) => i - (len / 4)).reverse();
   }
 
-  function randomColor() {
-    return new Isomer.Color(random(100) + 20, random(150) + 50, random(50) + 100);
-  }
-
-  function random(num) {
-    return Math.floor(Math.random() * num);
-  }
-
-  function randomHeight() {
-    return Math.floor(Math.random() * 10) / 10;
-  }
-
   class RandomDot {
     constructor(x, y) {
       this.x = x;
@@ -40,23 +28,40 @@
       this.progress = this.interval;
     }
 
+    randomColor() {
+      return new Isomer.Color(
+        this.random(100) + 20,
+        this.random(150) + 50,
+        this.random(50) + 100
+      );
+    }
+
+    random(num) {
+      return Math.floor(Math.random() * num);
+    }
+
+    randomHeight() {
+      return Math.floor(Math.random() * 10) / 10;
+    }
+
+
     randomColorHeight() {
       return {
-        color: randomColor(),
-        height: randomHeight()
+        color: this.randomColor(),
+        height: this.randomHeight()
       };
     }
 
     randomInterval() {
-      return Math.floor(Math.random() * 10);
+      return Math.floor(Math.random() * 10) + 1;
     }
 
     update() {
+      this.progress--;
       if (this.progress <= 0) {
         this.before = this.after;
         this.after = this.randomColorHeight();
       }
-      this.progress--;
     }
 
     currentColor() {
@@ -68,8 +73,13 @@
       );
     }
 
+    currentHeight() {
+      return this.currentValue(this.before.height, this.after.height);
+    }
+
     currentValue(before, after) {
-      return before;
+      const r = (after - before) / this.interval * this.progress + before;
+      return r;
     }
 
     current() {
@@ -78,7 +88,7 @@
         x: this.x,
         y: this.y,
         color: this.currentColor(),
-        height: this.before.height
+        height: this.currentHeight()
       };
     }
 
