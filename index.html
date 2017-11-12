@@ -14,7 +14,7 @@
 </div>
 <script>
   function indexies() {
-    const len = 46;
+    const len = 10;
     return Array(len).fill(0).map((v, i) => i - (len / 4)).reverse();
   }
 
@@ -24,8 +24,12 @@
       this.y = y;
       this.before = this.randomColorHeight();
       this.after = this.randomColorHeight();
+      this.resetInterval();
+    }
+
+    resetInterval() {
       this.interval = this.randomInterval();
-      this.progress = this.interval;
+      this.progress = 0;
     }
 
     randomColor() {
@@ -53,14 +57,15 @@
     }
 
     randomInterval() {
-      return Math.floor(Math.random() * 10) + 1;
+      return Math.floor(Math.random() * 50) + 1;
     }
 
     update() {
-      this.progress--;
-      if (this.progress <= 0) {
+      this.progress++;
+      if (this.progress >= this.interval) {
         this.before = this.after;
         this.after = this.randomColorHeight();
+        this.resetInterval()
       }
     }
 
@@ -94,25 +99,38 @@
 
   }
 
+  function addDot(iso, d) {
+    iso.add(
+      Isomer.Shape.Prism(
+        Isomer.Point(d.x, d.y, 0),
+        1,
+        1,
+        d.height
+      ),
+      d.color
+    );
+  }
+
   function main() {
-    const iso = new Isomer(document.getElementById('art'));
+    const canvas = document.getElementById('art');
+    const ctx = canvas.getContext('2d');
+    const iso = new Isomer(canvas);
     const xlist = indexies();
     const ylist = indexies();
     const grids = xlist.map((x) => ylist.map((y) => ({x, y}))).reduce((a, b) => a.concat(b));
 
     const dots = grids.map((g) => new RandomDot(g.x, g.y));
 
-    dots.map((d) => d.current()).forEach((d) => {
-      iso.add(
-        Isomer.Shape.Prism(
-          Isomer.Point(d.x, d.y, 0),
-          1,
-          1,
-          d.height
-        ),
-        d.color
-      );
-    });
+    function loop() {
+      requestAnimationFrame(loop);
+
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      dots.map((d) => d.current()).forEach((d) => {
+        addDot(iso, d);
+      });
+    }
+    requestAnimationFrame(loop);
   }
 
   main();
