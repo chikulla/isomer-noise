@@ -3,32 +3,108 @@
 <head>
   <meta charset="UTF-8">
   <title>untitled</title>
-  <script src="node_modules/isomer/dist/isomer.min.js"></script>
+  <!--<script src="node_modules/isomer/dist/isomer.min.js"></script>-->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/isomer/0.2.6/isomer.min.js"></script>
   <style>
     body {
       margin: 0;
     }
+
     canvas {
       width: 100%;
     }
   </style>
 </head>
 <body>
-    <canvas height="1000" width="1000" id="art"></canvas>
+<canvas height="1000" width="1000" id="art"></canvas>
 </div>
 <script>
   function indexies() {
-    const len = 23;
+    const len = 3; // default length of side 23
     return Array(len).fill(0).map((v, i) => i - (len / 4)).reverse();
+  }
+
+  function randomInt(num) {
+    return Math.floor(Math.random() * num);
+  }
+
+  class Range {
+    constructor(min, max) {
+      this.min = min;
+      this.max = max;
+    }
+  }
+
+  class RandomColor {
+    constructor(rRange, gRange, bRange) {
+      this.r = rRange;
+      this.g = gRange;
+      this.b = bRange;
+    }
+
+    random() {
+      return new Isomer.Color(
+        randomInt(this.r.max - this.r.min) + this.r.min,
+        randomInt(this.g.max - this.g.min) + this.g.min,
+        randomInt(this.b.max - this.b.min) + this.b.min
+      )
+    }
+  }
+
+  class RandomGen {
+    constructor(color, maxInterval, maxHeight) {
+      this.color = color;
+      this.maxInterval = maxInterval;
+      this.maxHeight = maxHeight;
+    }
+
+    randomColor() {
+      return this.color.random();
+    }
+
+    randomHeight() {
+      return Math.random() * this.maxHeight;
+    }
+
+    randomInterval() {
+      return randomInt(this.maxInterval);
+    }
+
+    random(num) {
+      return Math.floor(Math.random() * num);
+    }
+  }
+
+  class DefaultRandomGenFactory {
+    generateRange(min, max) {
+      return {min, max};
+    }
+
+    generateColor() {
+      return new RandomColor(
+        this.generateRange(0, 255),
+        this.generateRange(0, 255),
+        this.generateRange(0, 255)
+      );
+    }
+
+    generate() {
+      return new RandomGen(this.generateColor(), 100, 1);
+    }
   }
 
   class RandomDot {
     constructor(x, y) {
       this.x = x;
       this.y = y;
+      this.r = new DefaultRandomGenFactory().generate();
       this.before = this.randomColorHeight();
       this.after = this.randomColorHeight();
       this.resetInterval();
+    }
+
+    updateSeed(randomGen) {
+      this.r = randomGen;
     }
 
     resetInterval() {
@@ -37,11 +113,7 @@
     }
 
     randomColor() {
-      return new Isomer.Color(
-        this.random(100) + 20,
-        this.random(150) + 50,
-        this.random(50) + 100
-      );
+      return this.r.randomColor()
     }
 
     random(num) {
@@ -49,7 +121,7 @@
     }
 
     randomHeight() {
-      return Math.random() + 0.3;
+      return this.r.randomHeight();
     }
 
 
@@ -61,7 +133,7 @@
     }
 
     randomInterval() {
-      return Math.floor(Math.random() * 10) + 10;
+      return this.r.randomInterval();
     }
 
     update() {
@@ -121,7 +193,9 @@
     const iso = new Isomer(canvas);
     const xlist = indexies();
     const ylist = indexies();
-    const grids = xlist.map((x) => ylist.map((y) => ({x, y}))).reduce((a, b) => a.concat(b));
+    const grids = xlist
+      .map((x) => ylist.map((y) => ({x, y})))
+      .reduce((a, b) => a.concat(b));
 
     const dots = grids.map((g) => new RandomDot(g.x, g.y));
 
@@ -134,6 +208,7 @@
         renderDot(iso, d);
       });
     }
+
     requestAnimationFrame(loop);
   }
 
