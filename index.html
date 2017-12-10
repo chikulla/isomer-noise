@@ -5,15 +5,24 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <title>untitled</title>
 
-  <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css">
-  <script src="node_modules/isomer/dist/isomer.min.js"></script>
-  <script src="node_modules/vue/dist/vue.min.js"></script>
+  <!--<link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css">-->
+  <!--<script src="node_modules/isomer/dist/isomer.min.js"></script>-->
+  <!--<script src="node_modules/vue/dist/vue.min.js"></script>-->
 
-  <!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">-->
-  <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/isomer/0.2.6/isomer.min.js"></script>-->
-  <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.9/vue.min.js"></script>-->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css"
+        integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/isomer/0.2.6/isomer.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.9/vue.min.js"></script>
 
-  <script src=""></script>
+  <!-- update the version number as needed -->
+  <script defer src="/__/firebase/4.8.0/firebase-app.js"></script>
+  <!-- include only the Firebase features as you need -->
+  <script defer src="/__/firebase/4.8.0/firebase-auth.js"></script>
+  <script defer src="/__/firebase/4.8.0/firebase-database.js"></script>
+  <script defer src="/__/firebase/4.8.0/firebase-messaging.js"></script>
+  <script defer src="/__/firebase/4.8.0/firebase-storage.js"></script>
+  <!-- initialize the SDK after all desired features are loaded -->
+  <script defer src="/__/firebase/init.js"></script>
 
   <style>
     body {
@@ -31,27 +40,27 @@
 <div id="app" class="container">
   <div class="form-group">
     <label>interval: {{interval}}</label>
-    <input class="row" type="range" min="10" max="100" step="1" v-model="interval" number>
+    <input class="row" type="range" min="10" max="100" step="1" v-model.number="interval" @change="onIntervalChange">
   </div>
   <div class="form-group">
     <label>R: {{color.r.min}} - {{color.r.max}}</label>
     <div class="row">
-      <input type="range" min="0" max="254" step="1" v-model.number="color.r.min">
-      <input type="range" min="1" max="255" step="1" v-model.number="color.r.max">
+      <input type="range" min="0" max="254" step="1" v-model.number="color.r.min" @change="onRMinChange">
+      <input type="range" min="1" max="255" step="1" v-model.number="color.r.max" @change="onRMaxChange">
     </div>
   </div>
   <div class="form-group">
     <label>G: {{color.g.min}} - {{color.g.max}}</label>
     <div class="row">
-      <input type="range" min="0" max="254" step="1" v-model.number="color.g.min"/>
-      <input type="range" min="1" max="255" step="1" v-model.number="color.g.max"/>
+      <input type="range" min="0" max="254" step="1" v-model.number="color.g.min" @change="onGMinChange"/>
+      <input type="range" min="1" max="255" step="1" v-model.number="color.g.max" @change="onGMaxChange"/>
     </div>
   </div>
   <div class="form-group">
     <label>B: {{color.b.min}} - {{color.b.max}}</label>
     <div class="row">
-      <input type="range" min="0" max="254" step="1" v-model.number="color.b.min"/>
-      <input type="range" min="1" max="255" step="1" v-model.number="color.b.max"/>
+      <input type="range" min="0" max="254" step="1" v-model.number="color.b.min" @change="onBMinChange"/>
+      <input type="range" min="1" max="255" step="1" v-model.number="color.b.max" @chagne="onBMaxChange"/>
     </div>
   </div>
 </div>
@@ -141,10 +150,6 @@
       this.resetInterval();
     }
 
-    updateSeed(randomGen) {
-      this.r = randomGen;
-    }
-
     resetInterval() {
       this.interval = this.randomInterval();
       this.progress = 0;
@@ -225,7 +230,82 @@
     );
   }
 
+  const vue = new Vue({
+    el: '#app',
+    data: {
+      interval: 50,
+      color: {
+        r: {
+          min: 0,
+          max: 255
+        },
+        g: {
+          min: 0,
+          max: 255
+        },
+        b: {
+          min: 0,
+          max: 255
+        }
+      }
+    },
+    methods: {
+      fetchInterval: function (interval) {
+        console.log('fetch interval:', interval);
+        this.data.interval = interval;
+      },
+      onIntervalChange: function (event) {
+        firebaseSend('inverval', event);
+      },
+      onRMinChange: function (event) {
+        firebaseSend('color/r/min', event);
+      },
+      onRMaxChange: function (event) {
+        firebaseSend('color/r/max', event);
+      },
+      onGMinChange: function (event) {
+        firebaseSend('color/g/min', event);
+      },
+      onGMaxChange: function (event) {
+        firebaseSend('color/g/max', event);
+      },
+      onBMinChange: function (event) {
+        firebaseSend('color/b/min', event);
+      },
+      onBMaxChange: function (event) {
+        firebaseSend('color/b/max', event);
+      },
+    }
+  });
+
+  function firebaseSend(path, event) {
+    event.preventDefault();
+    let v = parseInt(event.target.value);
+    console.log('sending ', typeof v, ' {', v, '} to {', path, '}');
+  }
+
+  function initFirebase() {
+    var config = {
+      apiKey: "AIzaSyCKC4exWHQOlGvlq1VcxdqEY0OeoCETHxg",
+      authDomain: "isomer-tripper.firebaseapp.com",
+      databaseURL: "https://isomer-tripper.firebaseio.com",
+      projectId: "isomer-tripper",
+      storageBucket: "",
+      messagingSenderId: "101029877211"
+    };
+    firebase.initializeApp(config);
+  }
+
+  function initDB() {
+    firebase.database().ref('interval').on('value', (snapshot) => {
+      console.log(JSON.stringify(snapshot));
+      vue.data = snapshot;
+    });
+  }
+
   function main(input) {
+    initFirebase();
+    initDB();
 
     const canvas = document.getElementById('art');
     const ctx = canvas.getContext('2d');
@@ -259,27 +339,7 @@
     requestAnimationFrame(loop);
   }
 
-  const input = new Vue({
-    el: '#app',
-    data: {
-      interval: 50,
-      color: {
-        r: {
-          min: 0,
-          max: 255
-        },
-        g: {
-          min: 0,
-          max: 255
-        },
-        b: {
-          min: 0,
-          max: 255
-        }
-      }
-    }
-  });
-  main(input);
+  main(vue);
 </script>
 
 </body>
