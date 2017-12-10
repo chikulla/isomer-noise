@@ -1,65 +1,358 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Welcome to Firebase Hosting</title>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>untitled</title>
 
-    <!-- update the version number as needed -->
-    <script defer src="/__/firebase/4.8.0/firebase-app.js"></script>
-    <!-- include only the Firebase features as you need -->
-    <script defer src="/__/firebase/4.8.0/firebase-auth.js"></script>
-    <script defer src="/__/firebase/4.8.0/firebase-database.js"></script>
-    <script defer src="/__/firebase/4.8.0/firebase-messaging.js"></script>
-    <script defer src="/__/firebase/4.8.0/firebase-storage.js"></script>
-    <!-- initialize the SDK after all desired features are loaded -->
-    <script defer src="/__/firebase/init.js"></script>
+  <!--<link rel="stylesheet" href="../node_modules/bootstrap/dist/css/bootstrap.min.css">-->
+  <!--<script src="../node_modules/isomer/dist/isomer.min.js"></script>-->
+  <!--<script src="../node_modules/vue/dist/vue.min.js"></script>-->
 
-    <style media="screen">
-      body { background: #ECEFF1; color: rgba(0,0,0,0.87); font-family: Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 0; }
-      #message { background: white; max-width: 360px; margin: 100px auto 16px; padding: 32px 24px; border-radius: 3px; }
-      #message h2 { color: #ffa100; font-weight: bold; font-size: 16px; margin: 0 0 8px; }
-      #message h1 { font-size: 22px; font-weight: 300; color: rgba(0,0,0,0.6); margin: 0 0 16px;}
-      #message p { line-height: 140%; margin: 16px 0 24px; font-size: 14px; }
-      #message a { display: block; text-align: center; background: #039be5; text-transform: uppercase; text-decoration: none; color: white; padding: 16px; border-radius: 4px; }
-      #message, #message a { box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24); }
-      #load { color: rgba(0,0,0,0.4); text-align: center; font-size: 13px; }
-      @media (max-width: 600px) {
-        body, #message { margin-top: 0; background: white; box-shadow: none; }
-        body { border-top: 16px solid #ffa100; }
-      }
-    </style>
-  </head>
-  <body>
-    <div id="message">
-      <h2>Welcome</h2>
-      <h1>Firebase Hosting Setup Complete</h1>
-      <p>You're seeing this because you've successfully setup Firebase Hosting. Now it's time to go build something extraordinary!</p>
-      <a target="_blank" href="https://firebase.google.com/docs/hosting/">Open Hosting Documentation</a>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css"
+  integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/isomer/0.2.6/isomer.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.9/vue.min.js"></script>
+
+  <script src="https://www.gstatic.com/firebasejs/4.2.0/firebase.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/4.2.0/firebase-database.js"></script>
+
+  <style>
+    body {
+      margin: 0;
+    }
+
+    canvas {
+      width: 100%;
+    }
+  </style>
+</head>
+<body>
+
+<canvas height="1000" width="1000" id="art"></canvas>
+<div id="app" class="container">
+  <div class="form-group form-control">
+    <div class="row justify-content-center">
+      <label>interval: {{interval}}</label>
     </div>
-    <p id="load">Firebase SDK Loading&hellip;</p>
+    <div class="row justify-content-center">
+      <input class="row" type="range" min="10" max="100" step="1" v-model.number="interval" @change="onIntervalChange">
+    </div>
+  </div>
+  <div class="form-group form-control">
+    <div class="row justify-content-center">
+      <label>R: {{color.r.min}} - {{color.r.max}}</label>
+    </div>
+    <div class="row justify-content-center">
+      <input type="range" min="0" max="254" step="1" v-model.number="color.r.min" @change="onRMinChange">
+      <span style="width: 1rem"></span>
+      <input type="range" min="1" max="255" step="1" v-model.number="color.r.max" @change="onRMaxChange">
+    </div>
+  </div>
+  <div class="form-group form-control">
+    <div class="row justify-content-center">
+      <label>G: {{color.g.min}} - {{color.g.max}}</label>
+    </div>
+    <div class="row justify-content-center">
+      <input type="range" min="0" max="254" step="1" v-model.number="color.g.min" @change="onGMinChange"/>
+      <span style="width: 1rem"></span>
+      <input type="range" min="1" max="255" step="1" v-model.number="color.g.max" @change="onGMaxChange"/>
+    </div>
+  </div>
+  <div class="form-group form-control">
+    <div class="row justify-content-center">
+      <label>B: {{color.b.min}} - {{color.b.max}}</label>
+    </div>
+    <div class="row justify-content-center">
+      <input type="range" min="0" max="254" step="1" v-model.number="color.b.min" @change="onBMinChange"/>
+      <span style="width: 1rem"></span>
+      <input type="range" min="1" max="255" step="1" v-model.number="color.b.max" @chagne="onBMaxChange"/>
+    </div>
+  </div>
+</div>
 
-    <script>
-      document.addEventListener('DOMContentLoaded', function() {
-        // // 🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥
-        // // The Firebase SDK is initialized and available here!
-        //
-        // firebase.auth().onAuthStateChanged(user => { });
-        // firebase.database().ref('/path/to/ref').on('value', snapshot => { });
-        // firebase.messaging().requestPermission().then(() => { });
-        // firebase.storage().ref('/path/to/ref').getDownloadURL().then(() => { });
-        //
-        // // 🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥
+<script>
+  let sync = true;
+  function indexies() {
+    const len = 23; // default length of side 23
+    return Array(len).fill(0).map((v, i) => i - (len / 4)).reverse();
+  }
 
-        try {
-          let app = firebase.app();
-          let features = ['auth', 'database', 'messaging', 'storage'].filter(feature => typeof app[feature] === 'function');
-          document.getElementById('load').innerHTML = `Firebase SDK loaded with ${features.join(', ')}`;
-        } catch (e) {
-          console.error(e);
-          document.getElementById('load').innerHTML = 'Error loading the Firebase SDK, check the console.';
+  function randomInt(num) {
+    return Math.floor(Math.random() * num);
+  }
+
+  class Range {
+    constructor(min, max) {
+      this.min = min;
+      this.max = max;
+    }
+  }
+
+  class RandomColor {
+    constructor(rRange, gRange, bRange) {
+      this.r = rRange;
+      this.g = gRange;
+      this.b = bRange;
+    }
+
+    random() {
+      return new Isomer.Color(
+        randomInt(this.r.max - this.r.min) + this.r.min,
+        randomInt(this.g.max - this.g.min) + this.g.min,
+        randomInt(this.b.max - this.b.min) + this.b.min
+      )
+    }
+  }
+
+  class RandomGen {
+    constructor(color, maxInterval, maxHeight) {
+      this.color = color;
+      this.maxInterval = maxInterval;
+      this.maxHeight = maxHeight;
+    }
+
+    randomColor() {
+      return this.color.random();
+    }
+
+    randomHeight() {
+      return Math.random() * this.maxHeight + 0.2;
+    }
+
+    randomInterval() {
+      return randomInt(this.maxInterval);
+    }
+
+    random(num) {
+      return Math.floor(Math.random() * num);
+    }
+  }
+
+  class DefaultRandomGenFactory {
+    generateRange(min, max) {
+      return {min, max};
+    }
+
+    generateColor() {
+      return new RandomColor(
+        this.generateRange(0, 255),
+        this.generateRange(0, 255),
+        this.generateRange(0, 255)
+      );
+    }
+
+    generate() {
+      return new RandomGen(this.generateColor(), 100, 1);
+    }
+  }
+
+  class RandomDot {
+    constructor(x, y) {
+      this.x = x;
+      this.y = y;
+      this.r = new DefaultRandomGenFactory().generate();
+      this.before = this.randomColorHeight();
+      this.after = this.randomColorHeight();
+      this.resetInterval();
+    }
+
+    resetInterval() {
+      this.interval = this.randomInterval();
+      this.progress = 0;
+    }
+
+    randomColor() {
+      return this.r.randomColor()
+    }
+
+    random(num) {
+      return Math.floor(Math.random() * num);
+    }
+
+    randomHeight() {
+      return this.r.randomHeight();
+    }
+
+
+    randomColorHeight() {
+      return {
+        color: this.randomColor(),
+        height: this.randomHeight()
+      };
+    }
+
+    randomInterval() {
+      return this.r.randomInterval();
+    }
+
+    update() {
+      this.progress++;
+      if (this.progress >= this.interval) {
+        this.before = this.after;
+        this.after = this.randomColorHeight();
+        this.resetInterval()
+      }
+    }
+
+    currentColor() {
+      return new Isomer.Color(
+        this.currentValue(this.before.color.r, this.after.color.r),
+        this.currentValue(this.before.color.g, this.after.color.g),
+        this.currentValue(this.before.color.b, this.after.color.b),
+        this.currentValue(this.before.color.a, this.after.color.a),
+      );
+    }
+
+    currentHeight() {
+      return this.currentValue(this.before.height, this.after.height);
+    }
+
+    currentValue(before, after) {
+      const r = (after - before) / this.interval * this.progress + before;
+      return r;
+    }
+
+    current() {
+      this.update();
+      return {
+        x: this.x,
+        y: this.y,
+        color: this.currentColor(),
+        height: this.currentHeight()
+      };
+    }
+
+  }
+
+  function renderDot(iso, d) {
+    iso.add(
+      Isomer.Shape.Prism(
+        Isomer.Point(d.x, d.y, 0),
+        1,
+        1,
+        d.height
+      ),
+      d.color
+    );
+  }
+
+  const vue = new Vue({
+    el: '#app',
+    data: {
+      interval: 50,
+      color: {
+        r: {
+          min: 0,
+          max: 255
+        },
+        g: {
+          min: 0,
+          max: 255
+        },
+        b: {
+          min: 0,
+          max: 255
         }
+      }
+    },
+    methods: {
+      fetchInterval: function (interval) {
+        console.log('fetch interval:', interval);
+        this.data.interval = interval;
+      },
+      onIntervalChange: function (event) {
+        firebaseSend('interval', event);
+      },
+      onRMinChange: function (event) {
+        firebaseSend('color/r/min', event);
+      },
+      onRMaxChange: function (event) {
+        firebaseSend('color/r/max', event);
+      },
+      onGMinChange: function (event) {
+        firebaseSend('color/g/min', event);
+      },
+      onGMaxChange: function (event) {
+        firebaseSend('color/g/max', event);
+      },
+      onBMinChange: function (event) {
+        firebaseSend('color/b/min', event);
+      },
+      onBMaxChange: function (event) {
+        firebaseSend('color/b/max', event);
+      },
+    }
+  });
+
+  function firebaseSend(path, event) {
+    event.preventDefault();
+    let v = parseInt(event.target.value);
+    console.log('sending ', typeof v, ' {', v, '} to {', path, '}');
+    if(sync) {
+      firebase.database().ref(path).set(v);
+    }
+  }
+
+  function initFirebase() {
+    var config = {
+      apiKey: "AIzaSyCKC4exWHQOlGvlq1VcxdqEY0OeoCETHxg",
+      authDomain: "isomer-tripper.firebaseapp.com",
+      databaseURL: "https://isomer-tripper.firebaseio.com",
+      projectId: "isomer-tripper",
+      storageBucket: "isomer-tripper.appspot.com",
+      messagingSenderId: "101029877211"
+    };
+    firebase.initializeApp(config);
+  }
+
+  function initDB() {
+    firebase.database().ref('/').on('value', (snapshot) => {
+      console.log('got:', snapshot.val());
+      vue.data = snapshot.val();
+    });
+  }
+
+  function main(input) {
+    if(sync) {
+      initFirebase();
+      initDB();
+    }
+
+    const canvas = document.getElementById('art');
+    const ctx = canvas.getContext('2d');
+    const iso = new Isomer(canvas);
+    const xlist = indexies();
+    const ylist = indexies();
+    const grids = xlist
+      .map((x) => ylist.map((y) => ({x, y})))
+      .reduce((a, b) => a.concat(b));
+
+    const dots = grids.map((g) => new RandomDot(g.x, g.y));
+
+    function loop() {
+      requestAnimationFrame(loop);
+
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      dots.map((d) => {
+        d.r.maxInterval = input.interval;
+        d.r.color = new RandomColor(
+          input.color.r,
+          input.color.g,
+          input.color.b
+        );
+        return d.current();
+      }).forEach((d) => {
+        renderDot(iso, d);
       });
-    </script>
-  </body>
+    }
+
+    requestAnimationFrame(loop);
+  }
+
+  main(vue);
+</script>
+
+</body>
 </html>
