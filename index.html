@@ -2,9 +2,19 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <title>untitled</title>
-  <!--<script src="node_modules/isomer/dist/isomer.min.js"></script>-->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/isomer/0.2.6/isomer.min.js"></script>
+
+  <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css">
+  <script src="node_modules/isomer/dist/isomer.min.js"></script>
+  <script src="node_modules/vue/dist/vue.min.js"></script>
+
+  <!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">-->
+  <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/isomer/0.2.6/isomer.min.js"></script>-->
+  <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.9/vue.min.js"></script>-->
+
+  <script src=""></script>
+
   <style>
     body {
       margin: 0;
@@ -16,11 +26,39 @@
   </style>
 </head>
 <body>
+
 <canvas height="1000" width="1000" id="art"></canvas>
+<div id="app" class="container">
+  <div class="form-group">
+    <label>interval: {{interval}}</label>
+    <input class="row" type="range" min="10" max="100" step="1" v-model="interval"/>
+  </div>
+  <div class="form-group">
+    <label>R: {{color.r.min}} - {{color.r.max}}</label>
+    <div class="row">
+      <input type="range" min="0" max="254" step="1" v-model="color.r.min"/>
+      <input type="range" min="1" max="255" step="1" v-model="color.r.max"/>
+    </div>
+  </div>
+  <div class="form-group">
+    <label>G: {{color.g.min}} - {{color.g.max}}</label>
+    <div class="row">
+      <input type="range" min="0" max="254" step="1" v-model="color.g.min"/>
+      <input type="range" min="1" max="255" step="1" v-model="color.g.max"/>
+    </div>
+  </div>
+  <div class="form-group">
+    <label>B: {{color.b.min}} - {{color.b.max}}</label>
+    <div class="row">
+      <input type="range" min="0" max="254" step="1" v-model="color.b.min"/>
+      <input type="range" min="1" max="255" step="1" v-model="color.b.max"/>
+    </div>
+  </div>
 </div>
+
 <script>
   function indexies() {
-    const len = 3; // default length of side 23
+    const len = 1; // default length of side 23
     return Array(len).fill(0).map((v, i) => i - (len / 4)).reverse();
   }
 
@@ -63,7 +101,7 @@
     }
 
     randomHeight() {
-      return Math.random() * this.maxHeight;
+      return Math.random() * this.maxHeight + 0.2;
     }
 
     randomInterval() {
@@ -187,7 +225,8 @@
     );
   }
 
-  function main() {
+  function main(input) {
+
     const canvas = document.getElementById('art');
     const ctx = canvas.getContext('2d');
     const iso = new Isomer(canvas);
@@ -204,7 +243,10 @@
 
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      dots.map((d) => d.current()).forEach((d) => {
+      dots.map((d) => {
+        d.r.maxInterval = input.interval;
+        return d.current();
+      }).forEach((d) => {
         renderDot(iso, d);
       });
     }
@@ -212,7 +254,28 @@
     requestAnimationFrame(loop);
   }
 
-  main();
+  const input = new Vue({
+    el: '#app',
+    data: {
+      interval: 50,
+      color: {
+        r: {
+          min: 0,
+          max: 255
+        },
+        g: {
+          min: 0,
+          max: 255
+        },
+        b: {
+          min: 0,
+          max: 255
+        }
+      }
+    }
+  });
+  main(input);
 </script>
+
 </body>
 </html>

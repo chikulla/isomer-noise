@@ -9,6 +9,8 @@
   "keywords": [],
   "author": "Chikura Hara",
   "dependencies": {
-    "isomer": "^0.2.6"
+    "bootstrap": "^4.0.0-beta.2",
+    "isomer": "^0.2.6",
+    "vue": "^2.5.9"
   }
 }
