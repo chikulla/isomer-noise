@@ -73,6 +73,7 @@
 
 <script>
   let sync = true;
+  let initialized = false;
   function indexies() {
     const len = 23; // default length of side 23
     return Array(len).fill(0).map((v, i) => i - (len / 4)).reverse();
@@ -309,7 +310,9 @@
   function initDB() {
     firebase.database().ref('/').on('value', (snapshot) => {
       console.log('got:', snapshot.val());
-      vue.data = snapshot.val();
+      console.log(typeof snapshot.val().interval);
+      vue.interval = snapshot.val().interval;
+      vue.color = snapshot.val().color;
     });
   }
 
