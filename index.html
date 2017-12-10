@@ -31,34 +31,34 @@
 <div id="app" class="container">
   <div class="form-group">
     <label>interval: {{interval}}</label>
-    <input class="row" type="range" min="10" max="100" step="1" v-model="interval"/>
+    <input class="row" type="range" min="10" max="100" step="1" v-model="interval" number>
   </div>
   <div class="form-group">
     <label>R: {{color.r.min}} - {{color.r.max}}</label>
     <div class="row">
-      <input type="range" min="0" max="254" step="1" v-model="color.r.min"/>
-      <input type="range" min="1" max="255" step="1" v-model="color.r.max"/>
+      <input type="range" min="0" max="254" step="1" v-model.number="color.r.min">
+      <input type="range" min="1" max="255" step="1" v-model.number="color.r.max">
     </div>
   </div>
   <div class="form-group">
     <label>G: {{color.g.min}} - {{color.g.max}}</label>
     <div class="row">
-      <input type="range" min="0" max="254" step="1" v-model="color.g.min"/>
-      <input type="range" min="1" max="255" step="1" v-model="color.g.max"/>
+      <input type="range" min="0" max="254" step="1" v-model.number="color.g.min"/>
+      <input type="range" min="1" max="255" step="1" v-model.number="color.g.max"/>
     </div>
   </div>
   <div class="form-group">
     <label>B: {{color.b.min}} - {{color.b.max}}</label>
     <div class="row">
-      <input type="range" min="0" max="254" step="1" v-model="color.b.min"/>
-      <input type="range" min="1" max="255" step="1" v-model="color.b.max"/>
+      <input type="range" min="0" max="254" step="1" v-model.number="color.b.min"/>
+      <input type="range" min="1" max="255" step="1" v-model.number="color.b.max"/>
     </div>
   </div>
 </div>
 
 <script>
   function indexies() {
-    const len = 1; // default length of side 23
+    const len = 23; // default length of side 23
     return Array(len).fill(0).map((v, i) => i - (len / 4)).reverse();
   }
 
@@ -245,6 +245,11 @@
 
       dots.map((d) => {
         d.r.maxInterval = input.interval;
+        d.r.color = new RandomColor(
+          input.color.r,
+          input.color.g,
+          input.color.b
+        );
         return d.current();
       }).forEach((d) => {
         renderDot(iso, d);
